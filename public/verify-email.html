@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<script type="text/javascript">
+  window.history.forward();
+  function noBack() {
+      window.history.forward();
+  }
+</script>
+<body>
+    <div class="wrapper">
+        <h2 class="heading"><b>Verify Email</b></h2>
+        <div class="task-input">
+            <ion-icon name="create-outline"></ion-icon>
+            <input type="password" visibility="hidden" id="otp" placeholder="Enter OTP">
+        </div>
+        
+        <div class="controls">
+            <button type="button" class="clear-btn" onclick="verifyOtp();"><b>Verify OTP</b></button>
+        </div>
+    </div>
+    <script src="./script.js"></script></body>
+  </body>
+</html>
