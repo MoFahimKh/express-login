@@ -30,10 +30,9 @@ router.post("/login", (req, res) => {
 
   // Store the OTP for the user
   otps.set(email, otp);
-  console.log(otps, "set otp");
 
   // Create a JWT token with the email
-  const token = jwt.sign({ email }, jwtSecret, { expiresIn: "15m" });
+  const token = jwt.sign({ email }, jwtSecret, { expiresIn: "45m" });
 
   // Send the OTP to the user's email
   const mailOptions = {
@@ -71,6 +70,24 @@ router.post("/verify-otp", (req, res) => {
   } else {
     // Invalid OTP
     res.status(401).json({ message: "Invalid OTP" });
+  }
+});
+
+// Get user details route
+router.get("/user", (req, res) => {
+  const token = req.headers.authorization.split(" ")[1]; // The JWT token is provided in the Authorization header
+  try {
+    // Verify and decode the JWT token to access the user's email
+    const decodedToken = jwt.verify(token, jwtSecret);
+    const email = decodedToken.email;
+    const userDetails = {
+      email: email,
+    };
+console.log(userDetails)
+    res.json(userDetails);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Failed to fetch user details" });
   }
 });
 

@@ -1,12 +1,12 @@
 function login() {
   const email = document.getElementById("username").value;
-  const emailError = document.getElementById("email-error"); 
-  const loginBtn = document.getElementById("login-btn"); 
+  const emailError = document.getElementById("email-error");
+  const loginBtn = document.getElementById("login-btn");
 
   if (!validateEmail(email)) {
     // Invalid email
-    emailError.textContent = "Invalid email"; 
-    loginBtn.disabled = true; 
+    emailError.textContent = "Invalid email";
+    loginBtn.disabled = true;
     return;
   }
 
@@ -41,18 +41,17 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
-
 function verifyOtp() {
   const otp = document.getElementById("otp").value;
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get("email");
-  const token = localStorage.getItem("token"); 
+  const token = localStorage.getItem("token");
 
   fetch("/api/verify-otp", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, 
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ email, otp }),
   })
@@ -60,7 +59,7 @@ function verifyOtp() {
       if (response.ok) {
         // OTP is valid
         // Redirect to a success page or perform any other actions
-        window.location.href = "/all-users.html";
+        window.location.href = "/dashboard.html";
       } else {
         // Invalid OTP
         return response.json();
@@ -93,17 +92,18 @@ function logout() {
 // Initialize Google Sign-In
 function initializeGoogleSignin() {
   google.accounts.id.initialize({
-    client_id:"876114257473-i1ku4pf9jpgu33cji3vbn5s502149o07.apps.googleusercontent.com", //will update it 
+    client_id:
+      "876114257473-i1ku4pf9jpgu33cji3vbn5s502149o07.apps.googleusercontent.com", //will update it
     callback: handleGoogleSigninCallback,
   });
 
   google.accounts.id.renderButton(
-    document.getElementById('google-signin-btn'),
+    document.getElementById("google-signin-btn"),
     {
-      theme: 'filled_blue',
-      size: 'large',
-      text: 'Login with Google',
-      shape: 'rectangular',
+      theme: "filled_blue",
+      size: "large",
+      text: "Login with Google",
+      shape: "rectangular",
     }
   );
 }
@@ -113,22 +113,49 @@ function handleGoogleSigninCallback(response) {
   const credential = response.credential;
 
   // Send the credential to the server for verification
-  fetch('/api/google/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  fetch("/api/google/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ credential }),
   })
     .then((res) => res.json())
     .then((data) => {
       if (data.success) {
-        localStorage.setItem('token', data.token);
-        window.location.href = '/all-users.html';
+        localStorage.setItem("token", data.token);
+        window.location.href = "/dashboard.html";
       } else {
-        console.log('Error:', data.error);
+        console.log("Error:", data.error);
       }
     })
     .catch((error) => {
-      console.log('Error:', error);
+      console.log("Error:", error);
     });
 }
 window.onload = initializeGoogleSignin;
+
+function displayUserDetails() {
+  const token = localStorage.getItem("token");
+
+  fetch("/api/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Failed to fetch user details");
+      }
+    })
+    .then((data) => {
+      const userContainer = document.getElementById("userContainer");
+      const email = data.email;
+      const emailString = `Email: ${email}`;
+      userContainer.innerHTML = `<pre>${emailString}</pre>`;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
