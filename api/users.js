@@ -62,14 +62,8 @@ router.post("/verify-otp", (req, res) => {
   // Decode the JWT token to access the email
   const decodedToken = jwt.verify(token, jwtSecret);
   const email = decodedToken.email;
-
-  console.log(otps.get(email), "mapping");
-  console.log(email, "email");
-
   // Get the stored OTP for the user
   const storedOTP = otps.get(email);
-  console.log(storedOTP, "stored otp");
-
   if (storedOTP === otp) {
     // OTP is valid
     otps.delete(email); // Remove OTP from storage
